@@ -1,12 +1,15 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { config } from 'dotenv';
 
+config();
+//connction of dataBased
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  host: 'localhost',
-  port: 5433,
-  username: 'postgres',
-  password: '123456',
-  database: 'App-E-comerce',
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   entities: [],
   migrations: [],
   logging: false,
