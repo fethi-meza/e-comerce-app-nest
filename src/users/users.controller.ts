@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import {
   Controller,
@@ -14,11 +15,24 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
+  
   constructor(private readonly usersService: UsersService) {}
 
+
+
+  
+@Post('singup')
+ async singup(@Body() Body:any){
+  return await this.usersService.singup(Body)
+ 
+}
+
+
   @Post()
+   
   create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    //return this.usersService.create(createUserDto);
+    return 'hi'
   }
 
   @Get()
