@@ -2,7 +2,7 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
 /* eslint-disable prettier/prettier */
-export class UserSingUp{
+export class UserSingUpDto{
    // validtion name *_*
     @IsNotEmpty({message :"name can not be null" })
     @IsString({message :"name should be strig" })
