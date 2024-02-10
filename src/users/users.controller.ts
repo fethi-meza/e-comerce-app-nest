@@ -1,3 +1,5 @@
+import { UserEntity } from './entities/user.entity';
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import {
@@ -12,6 +14,8 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserSingUp } from './dto/user-singup.dto';
+import { promises } from 'dns';
 
 @Controller('users')
 export class UsersController {
@@ -21,9 +25,10 @@ export class UsersController {
 
 
   
+  //singup user 
 @Post('singup')
- async singup(@Body() Body:any){
-  return await this.usersService.singup(Body)
+ async singup(@Body() UserSingUp:UserSingUp): Promise<{user :UserEntity}>{
+  return { user :await this.usersService.singup(UserSingUp)}
  
 }
 
