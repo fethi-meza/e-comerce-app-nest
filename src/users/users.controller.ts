@@ -17,6 +17,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserSingUpDto } from './dto/user-singup.dto';
 import { promises } from 'dns';
+import { UserSignInDto } from "./dto/user-signin.dto";
 
 @Controller('users')
 export class UsersController {
@@ -27,14 +28,27 @@ export class UsersController {
 
   
   //singup user 
-@Post('singup')
- async singup(@Body() UserSingUpDto:UserSingUpDto): Promise<{user :UserEntity}>{
-  return { user :await this.usersService.singup(UserSingUpDto)}
+@Post('sigup')
+ async singup(@Body() userSingUpDto:UserSingUpDto): Promise<{user :UserEntity}>{
+  return { user :await this.usersService.singup(userSingUpDto)}
  
 }
 
+//signin User
+  @Post('sigin')
+  async Signin(@Body() userSignInDto :UserSignInDto): Promise<{
+    accessToken: string;
+    user: UserEntity;
+}>{
 
-  @Post()
+const user=  await this.usersService.signin(userSignInDto)
+ const accessToken = await this.usersService.accessToken(user)
+ return {accessToken,user};
+}
+
+
+
+
    
   create(@Body() createUserDto: CreateUserDto) {
     //return this.usersService.create(createUserDto);

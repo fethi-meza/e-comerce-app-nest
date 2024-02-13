@@ -7,7 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { UserSingUpDto } from './dto/user-singup.dto';
-import {hash } from 'bcrypt';
+import {hash  , compare} from 'bcrypt';
+import { UserSignInDto } from './dto/user-signin.dto';
+import { sign } from 'jsonwebtoken';
 
 @Injectable()
 export class UsersService {
@@ -18,27 +20,42 @@ export class UsersService {
 
 
 //singup new user 
-   async singup(UserSingUpDto: UserSingUpDto): Promise<UserEntity> {
+   async singup(userSingUpDto: UserSingUpDto): Promise<UserEntity> {
 //try to find if this email exsits
-    const UserExsits = await this.findUsreByEmail(UserSingUpDto.email)
+    const UserExsits = await this.findUsreByEmail(userSingUpDto.email)
     if (UserExsits) throw  new BadRequestException('Email not exsits pls try agine or create new account')
 
     //hashing the  password 
 
-    UserSingUpDto.password = await hash(UserSingUpDto.password,10)
+    userSingUpDto.password = await hash(userSingUpDto.password,10)
 
 
     // create new User
-    let user = this.usersRepository.create(UserSingUpDto);
+    let user = this.usersRepository.create(userSingUpDto);
 
-    //save the new usre in DB
+    //save the new usre in DB and  not show the paswrod when show the respons
     user = await this.usersRepository.save(user)
     delete user.password
     return user ;
   }
 
-
+//signin user 
+async signin(userSignInDto :UserSignInDto): Promise<UserEntity>{
+//to show the password when send the respons
+  const UserExsits = await this.usersRepository.createQueryBuilder('users').addSelect('users.password').where('users.email=:email',{email:userSignInDto.email}).getOne();
   
+  if (!UserExsits) throw  new BadRequestException('Bad creadentials')
+
+  // compation password between UserExsits and the input password 
+  const matchPassword =  await compare(userSignInDto.password ,UserExsits.password)
+
+  if(!matchPassword)  throw  new BadRequestException('Bad creadentials')
+
+  delete UserExsits.password;
+  return  UserExsits ;
+}  
+
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
@@ -66,4 +83,14 @@ export class UsersService {
 
 return this.usersRepository.findOneBy({email})
   }
+
+//accseeTooken
+
+async accessToken(user:UserEntity){
+return sign({
+  id:user.id,email:user.email,password:user.password},process.env.ACCESS_TOKEN_SECRET_KEY,{expiresIn:process.env.ACCESS_TOKEN_TIME}) 
+
+
+}
+
 }
