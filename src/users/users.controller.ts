@@ -35,12 +35,11 @@ export class UsersController {
 }
 
 //signin User
-  @Post('sigin')
+  @Post('signin')
   async Signin(@Body() userSignInDto :UserSignInDto): Promise<{
     accessToken: string;
     user: UserEntity;
 }>{
-
 const user=  await this.usersService.signin(userSignInDto)
  const accessToken = await this.usersService.accessToken(user)
  return {accessToken,user};
@@ -55,14 +54,16 @@ const user=  await this.usersService.signin(userSignInDto)
     return 'hi'
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
 
+//get all users
+  @Get('all')
+ async findAll() : Promise<UserEntity[]> {
+    return await this.usersService.findAll();
+  }
+// get user  by id   
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+ async findOne(@Param('id') id: string) : Promise<UserEntity> {
+    return await this.usersService.findOne(+id);
   }
 
   @Patch(':id')

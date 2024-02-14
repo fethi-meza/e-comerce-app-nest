@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BadRequestException, Body, Injectable } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +10,7 @@ import { UserSingUpDto } from './dto/user-singup.dto';
 import {hash  , compare} from 'bcrypt';
 import { UserSignInDto } from './dto/user-signin.dto';
 import { sign } from 'jsonwebtoken';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -61,13 +62,26 @@ async signin(userSignInDto :UserSignInDto): Promise<UserEntity>{
     return 'This action adds a new user';
   }
 
-  findAll() {
-    return `This action returns all users`;
+
+
+  //find all users 
+
+ async findAll() :  Promise<UserEntity[]> {
+    return await this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+
+// fin user by id 
+
+ async findOne(id: number): Promise<UserEntity> {
+   const user = await this.usersRepository.findOneBy({id})
+   if(!user) throw  new NotFoundException("User not found !!")
+   return user ;
   }
+
+
+
+
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
