@@ -74,6 +74,11 @@ async signin(userSignInDto :UserSignInDto): Promise<UserEntity>{
 // fin user by id 
 
  async findOne(id: number): Promise<UserEntity> {
+
+  if (isNaN(id) || id <= 0) {
+    throw new Error('Invalid user ID');
+  }
+  
    const user = await this.usersRepository.findOneBy({id})
    if(!user) throw  new NotFoundException("User not found !!")
    return user ;

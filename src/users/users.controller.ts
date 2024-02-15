@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
+
+
+
 import { UserEntity } from "./entities/user.entity";
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
+
 import {
   Controller,
   Get,
@@ -13,11 +14,13 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserSingUpDto } from './dto/user-singup.dto';
-import { promises } from 'dns';
+
 import { UserSignInDto } from "./dto/user-signin.dto";
+import { CurrentUser } from './../Utility/decorators/current-user.decorator';
+
+
 
 @Controller('users')
 export class UsersController {
@@ -48,13 +51,6 @@ const user=  await this.usersService.signin(userSignInDto)
 
 
 
-   
-  create(@Body() createUserDto: CreateUserDto) {
-    //return this.usersService.create(createUserDto);
-    return 'hi'
-  }
-
-
 //get all users
   @Get('all')
  async findAll() : Promise<UserEntity[]> {
@@ -75,4 +71,12 @@ const user=  await this.usersService.signin(userSignInDto)
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
+// get my profile (current uesr )
+
+  @Get('me')
+  getProfile(@CurrentUser() currentUser :UserEntity){
+return currentUser;
+  }
+
 }
