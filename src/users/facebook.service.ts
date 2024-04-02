@@ -3,13 +3,16 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import axios from 'axios';
 
 @Injectable()
+
 export class FacebookService {
   async createPost(accessToken: string, message: string) {
     try {
       //replec the link with to your link :: feed and me
-      const response = await axios.post(`https://graph.facebook.com/me/feed`, {
+
+
+      const response = await axios.post(`https://graph.facebook.com/236001102936100/feed`, {
         message: message,
-        access_token: process.env.accessTokenPageFacbook,
+        access_token:accessToken ,
       });
       return response.data;
     } catch (error) {
@@ -19,7 +22,7 @@ export class FacebookService {
 
   async getPosts(accessToken: string) {
     try {
-      const response = await axios.get(`https://graph.facebook.com/me/feed`, {
+      const response = await axios.get(`https://graph.facebook.com/236001102936100/feed`, {
         params: {
           access_token: accessToken,
         },

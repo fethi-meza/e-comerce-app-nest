@@ -16,7 +16,6 @@ import { UserEntity } from './entities/user.entity';
 import { UserSignInDto } from './dto/user-signin.dto';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { AuthenticationGuard } from 'src/utility/guards/authentication.guard';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AuthorizeRoles } from 'src/utility/decorators/authorize-roles.decorator';
 import { Roles } from 'src/utility/common/user-roles.enum';
 import { AuthorizeGuard } from 'src/utility/guards/authorization.guard';
@@ -44,8 +43,7 @@ export class UsersController {
     return { accessToken, user };
   }
 
-  @Post()
-  //@AuthorizeRoles(Roles.ADMIN)
+  @AuthorizeRoles(Roles.ADMIN)
   @UseGuards(AuthenticationGuard, AuthorizeGuard([Roles.ADMIN]))
   @Get('all')
   async findAll(): Promise<UserEntity[]> {
